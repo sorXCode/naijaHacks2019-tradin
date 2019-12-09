@@ -1,19 +1,10 @@
-# naijaHack2019-tradin
+# Project TradIn
 
-# Team ACEX
-
-## Team Members
-
-- Adekunle Azeez (Graphics Designer)
-  justthinkitdesigns@gmail.com
-- Adebayo Solomon Ekundayo (Project Manager)
-  adebayosolomon74@gmail.com
-- Farinnako Adeyanju Victor (Software Developer)
-  sorxcode@gmail.com
+**OBJECTIVE:** To connect a market having difficulty accessing people who can provide quality service for them in a given location with people who have skills and can provide quality service but are unable to find a market for their services in the same location.
 
 ## Problems
 
-1. **UNEMPLOYMENT:** There are millions of Nigerians with soft skills needed day-to-day, including graphics design, writing, programming, other casual works (such as driving, cleaning e.t.c) but still remain largely unemployed or under-employed.
+1. **UNEMPLOYMENT:** There are millions of Nigerians with technical skills needed day-to-day, including graphics design, writing, programming, other casual works (such as driving, cleaning e.t.c) but still remain largely unemployed or under-employed.
 
 2. **ARTISAN TO PEOPLE RELATIONSHIP:** There has been a problem connecting artisans to people in need of their services within a defined location. There are also people who need their services within their locality and are constantly looking for someone to fill these roles.
 
@@ -39,10 +30,6 @@ There is always a job for everyone willing to do something thereby giving equity
 
 **CASE STUDY (continued):** Uncle Segun launched TradIn app to see if there is any mechanic in the area. The result included Uncle Joe, with a 4.8/5 rating from 27 feedbacks, he proceeds to place a request and call in the application. In 2 minutes Uncle Joe located Uncle Segun and fixed his car skillfully.
 
-## Proposed Stack
-
-Linux, Dart, Flutter, Python, JavaScript, Linode, Nexmo, Twilio and PostgreSQL
-
 ## Benefits
 
 - Job and flexible Income creation.
@@ -54,22 +41,3 @@ Linux, Dart, Flutter, Python, JavaScript, Linode, Nexmo, Twilio and PostgreSQL
 - Encourages talent development and trade learning.
 - Improved Quality of service-renderers as they would seek to learn the trends/technologies to stay relevant.
 - An overall increase of skilled artisans/traders and talents in Nigeria.
-
-## Directory Layout
-
-<pre>
-
-+--- android        #android app related files
-+--- api            #api server and backend related files
-+--- build          #flutter build files and third-party dependencies
-+--- fonts          #fonts used in project
-+--- images         #icons and images used in project
-+--- ios            #ios related files
-+--- lib            #application source codes
-+--- mockups        #mockups of the project
-+--- test           #Files relating to unit testing
-.gitignore          #git ignore file
-pubspec.yaml        #application metadata
-README.md           #Project Definition
-tradin.imi          #application's Magellan Map Format
-</pre>
