@@ -11,20 +11,30 @@ class PhoneAuth extends StatefulWidget {
 class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
   @override
   Widget build(BuildContext context) {
-    var codeBox = Container(
-      alignment: Alignment.center,
-      width: 250,
-      decoration:
-          BoxDecoration(border: Border.all(color: Colors.white38, width: 8)),
-      child: Text(
-        "1892",
-        style: TextStyle(
-          fontSize: 40,
-          fontWeight: FontWeight.w800,
-          color: Colors.white,
-          letterSpacing: 25,
+    var codeBox = Stack(
+      alignment: Alignment.centerRight,
+      children: [
+        Container(
+          alignment: Alignment.center,
+          width: 250,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.white38,
+              width: 8,
+            ),
+          ),
+          child: Text(
+            "1282",
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+              letterSpacing: 25,
+            ),
+          ),
         ),
-      ),
+        IconButton(icon: Icon(Icons.backspace),)
+      ],
     );
 
     var numberPad = Padding(
@@ -33,7 +43,7 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
+            margin: EdgeInsets.symmetric(horizontal: 50),
             child: GridView.count(
               shrinkWrap: true,
               crossAxisCount: 3,
@@ -43,11 +53,11 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           Container(
             alignment: Alignment.bottomRight,
-            margin: EdgeInsets.symmetric(horizontal: 30),
+            margin: EdgeInsets.symmetric(horizontal: 50),
             child: GridView.count(
                 shrinkWrap: true,
                 crossAxisCount: 3,
@@ -58,7 +68,7 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
                   buttonBuilder(0),
                   IconButton(
                     icon: Icon(
-                      Icons.arrow_back,
+                      Icons.check,
                       size: 40,
                     ),
                   ),
