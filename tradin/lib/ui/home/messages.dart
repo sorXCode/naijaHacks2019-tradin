@@ -1,17 +1,72 @@
 import 'package:flutter/material.dart';
 
-class Messages extends StatefulWidget {
-  Messages({Key key}) : super(key: key);
+class Messages extends StatelessWidget {
+  const Messages({Key key}) : super(key: key);
 
-  @override
-  _MessagesState createState() => _MessagesState();
-}
-
-class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-       child: Column(),
+    return SafeArea(
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12.0,
+              vertical: 8.0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  "Messages",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add_circle_outline),
+                  onPressed: () => print("new chat"),
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          Material(
+            child: InkWell(
+              onTap: () => print("Message entry clicked"),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.add_alert),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "Notifications",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "Dear Customer, Your delivering address was changed on 12-10-19 to Kings MarCurrie",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      ],
+                    ),
+                  ),
+                  Text('12:00pm'),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
