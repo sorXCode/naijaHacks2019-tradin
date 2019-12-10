@@ -118,6 +118,7 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
           ),
         ),
         Checkbox(
+          value: true,
           onChanged: (val) {
             setState(
               () {
