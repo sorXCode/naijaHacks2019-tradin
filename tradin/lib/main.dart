@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tradin/ui/user/phoneAuth.dart';
+import 'package:tradin/ui/home/home.dart';
 import 'package:tradin/ui/user/widgetsConstants.dart';
 
 void main() async {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget with WidgetsConstants {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: PhoneAuth(),
+      home: Home(),
     );
   }
 }
