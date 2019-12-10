@@ -2,3 +2,4 @@ py[ca]
 __pycache__/
 .idea
 .vscode
+*cred*
