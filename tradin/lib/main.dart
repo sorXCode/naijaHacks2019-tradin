@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tradin/ui/user/signup.dart';
 import 'package:tradin/ui/user/widgetsConstants.dart';
-import 'package:tradin/ui/user/login.dart';
 
 void main() async {
   await SystemChrome.setPreferredOrientations([
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget with WidgetsConstants {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Login(),
+      home: SignUp(),
     );
   }
 }
