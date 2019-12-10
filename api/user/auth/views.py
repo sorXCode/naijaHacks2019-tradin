@@ -13,6 +13,7 @@ auth_ = HTTPTokenAuth(scheme="Bearer")
 user_app = Blueprint('user_app', __name__)
 api = Api(user_app)
 
+
 class SignupAPI(Resource):
     model = User
     userParser = reqparse.RequestParser()
@@ -55,27 +56,31 @@ class SignupAPI(Resource):
             abort(409, "account found on platform, create_user unsuccessful.")
         g.user = user
         auth_token = user.generate_auth_token()
-        current_time = time.time()
         uid = secrets.token_hex(10)
         return {'status': 'success',
                 'message': 'Account Created, proceed to home',
-                'user': {
-                    'providerData': [
-                        {'providerId': 'self',
-                         'uid': uid,
-                         'displayName': 'VICTOR ADEYANJU',
+                'user': {'uid': uid,
+                         'displayName': user.full_name,
                          'photoUrl': 'user.photo_url',
-                         'email': 'user.email',
-                         'phoneNumber': 'user.phone_number',
-                         'isEmailVerified': 'user.is_email_verified()',
-                         'isPhoneVerified': 'user.is_phone_number_verified()',
+                         'email': user.email,
+                         'phoneNumber': user.phone_number,
+                         'isEmailVerified': user.is_email_verified(),
+                         'isPhoneVerified': user.is_phone_number_verified(),
                          },
-                    ],
-                },
-                'token': 'auth_token',
+                'token': auth_token,
                 }
 
 
+
+class VerifyPhone(Resource):
+    verification_Parser = reqparse.ReqestParser()
+    verification_Parser.add_argument('code', type=str, nullable=False)
+
+    def get(self):
+        pass
+
+    def post(self):
+        pass
 class LoginAPI(Resource):
     model = User
     userParser = reqparse.RequestParser()
