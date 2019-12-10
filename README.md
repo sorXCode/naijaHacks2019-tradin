@@ -62,17 +62,18 @@ Linux, Dart, Flutter, Python, JavaScript, Linode, Nexmo, Twilio and PostgreSQL
 
 <pre>
 
-+--- android        #android app related files
-+--- api            #api server and backend related files
-+--- build          #flutter build files and third-party dependencies
-+--- fonts          #fonts used in project
-+--- images         #icons and images used in project
-+--- ios            #ios related files
-+--- lib            #application source codes
-+--- mockups        #mockups of the project
-+--- test           #Files relating to unit testing
++--- api/            #api server and backend related files
++--- mockups/        #mockups of the project
++--- tradin/         #application's file
+    +--- android/        #android app related files
+    +--- build/          #flutter build files and third-party dependencies
+    +--- fonts/          #fonts used in project
+    +--- images/         #icons and images used in project
+    +--- ios/            #ios related files
+    +--- lib/            #application source codes
+    +--- test/           #Files relating to unit testing
+    +--- pubspec.yaml        #application metadata
+    +--- tradin.imi          #application's Magellan Map Format
 .gitignore          #git ignore file
-pubspec.yaml        #application metadata
 README.md           #Project Definition
-tradin.imi          #application's Magellan Map Format
 </pre>
