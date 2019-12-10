@@ -1,32 +1,33 @@
 import json
 import nexmo
-import urllib3
-
-with open("./nexmo_cred.json") as credentials:
-    cred = json.load(credentials)
-    key = cred["key"]
-    secret = cred["secret"]
-
-http = urllib3.PoolManager()
 
 
-# response = http.request(
-#     'GET', f"https://rest.nexmo.com/sc/us/2fa/json?api_key={key}&api_secret={secret}&to=07039127884&pin=3434")
-client = nexmo.Client(key=key, secret=secret)
+class NexmoAPI:
+
+  def __init__(self):
+      with open("./nexmo_cred.json") as credentials:
+          cred = json.load(credentials)
+          key = cred["key"]
+          secret = cred["secret"]
+      self.client = nexmo.Client(key=key, secret=secret)
+
+  def send_code(self, phone_number):
+      self.response = self.client.start_verification(
+          number=phone_number,
+          brand="TradIn",
+          workflow_id="5",
+          code_length="4")
+      self.output_response()
 
 
-response = client.start_verification(
-  number="2347039127884",
-  brand="TradIn",
-  workflow_id="5",
-  code_length="4")
-
-if response["status"] == "0":
-  print("Started verification request_id is %s" % (response["request_id"]))
-else:
-  print("Error: %s" % response["error_text"])
-
-# response = client.check_verification("6c70fc14815140d79dacbf5fcc9085b1", code=8678)
+  def verify_code(self, request_id, code):
+      self.response = self.client.check_verification(request_id, code=code)
+      self.output_response()
 
 
-print(response)
+  def output_response(self):
+      if self.response["status"] == "0":
+          print("Started verification request_id is %s" %
+                (self.response["request_id"]))
+      else:
+          print("Error: %s" % self.response["error_text"])
