@@ -2,7 +2,6 @@ import secrets
 import time
 
 from flask import Blueprint, Response, abort, g, jsonify
-
 from flask_httpauth import HTTPTokenAuth
 from flask_restful import Api, Resource, reqparse, request
 
@@ -73,7 +72,7 @@ class SignupAPI(Resource):
 
 
 class VerifyPhone(Resource):
-    verification_Parser = reqparse.ReqestParser()
+    verification_Parser = reqparse.RequestParser()
     verification_Parser.add_argument('code', type=str, nullable=False)
 
     def get(self):
