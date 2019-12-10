@@ -11,9 +11,12 @@
 - Farinnako Adeyanju Victor (Software Developer)
   sorxcode@gmail.com
 
+
+**OBJECTIVE:** To connect a market having difficulty accessing people who can provide quality service for them in a given location with people who have skills and can provide quality service but are unable to find a market for their services in the same location.
+
 ## Problems
 
-1. **UNEMPLOYMENT:** There are millions of Nigerians with soft skills needed day-to-day, including graphics design, writing, programming, other casual works (such as driving, cleaning e.t.c) but still remain largely unemployed or under-employed.
+1. **UNEMPLOYMENT:** There are millions of Nigerians with technical skills needed day-to-day, including graphics design, writing, programming, other casual works (such as driving, cleaning e.t.c) but still remain largely unemployed or under-employed.
 
 2. **ARTISAN TO PEOPLE RELATIONSHIP:** There has been a problem connecting artisans to people in need of their services within a defined location. There are also people who need their services within their locality and are constantly looking for someone to fill these roles.
 
