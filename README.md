@@ -12,7 +12,8 @@
   sorxcode@gmail.com
 
 
-**OBJECTIVE:** To connect a market having difficulty accessing people who can provide quality service for them in a given location with people who have skills and can provide quality service but are unable to find a market for their services in the same location.
+## OBJECTIVE
+ To connect a market having difficulty accessing people who can provide quality service for them in a given location with people who have skills and can provide quality service but are unable to find a market for their services in the same location.
 
 ## Problems
 
@@ -64,7 +65,7 @@ Linux, Dart, Flutter, Python, JavaScript, Linode, Nexmo, Twilio and PostgreSQL
 
 +--- api/            #api server and backend related files
 +--- mockups/        #mockups of the project
-+--- tradin/         #application's file
++--- tradin/        #application components
     +--- android/        #android app related files
     +--- build/          #flutter build files and third-party dependencies
     +--- fonts/          #fonts used in project
@@ -72,8 +73,8 @@ Linux, Dart, Flutter, Python, JavaScript, Linode, Nexmo, Twilio and PostgreSQL
     +--- ios/            #ios related files
     +--- lib/            #application source codes
     +--- test/           #Files relating to unit testing
-    +--- pubspec.yaml        #application metadata
-    +--- tradin.imi          #application's Magellan Map Format
-.gitignore          #git ignore file
+         pubspec.yaml        #application metadata
+         tradin.imi          #application's Magellan Map Format
+.gitignore          #gitignore file for project
 README.md           #Project Definition
 </pre>
