@@ -53,6 +53,8 @@ class User(UserMixin, db.Model):
     def check_user(cls, phone_number=None, email=None):
         user = cls.query.filter_by(email=email).first(
         ) or cls.query.filter_by(phone_number=phone_number).first()
+        if not user:
+            print("No USER Found")
         return user or False
 
     def verify_password(self, password):
@@ -65,7 +67,7 @@ class User(UserMixin, db.Model):
                        phone_number=phone_number)
             user.password = password
             db.session.add(user)
-            # db.session.commit()
+            db.session.commit()
             return user
         return None
 
@@ -97,13 +99,14 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return "<User {}>".format(self.full_name)
     
-    def get_user(self):
-        return json {'displayName': user.full_name,
+
+    def profile(self):
+        return {'displayName': self.full_name,
                          'photoUrl': 'user.photo_url',
-                         'email': user.email,
-                         'phoneNumber': user.phone_number,
-                         'isEmailVerified': user.is_email_verified,
-                         'isPhoneVerified': user.is_phone_number_verified,
+                         'email': self.email,
+                         'phoneNumber': self.phone_number,
+                         'isEmailVerified': self.is_email_verified,
+                         'isPhoneVerified': self.is_phone_number_verified,
                          },
 
 

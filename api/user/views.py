@@ -147,12 +147,18 @@ class Home(Resource):
 
 
 class Profile(Resource):
-    
+    model = User
+    userParser = reqparse.RequestParser()
+    userParser.add_argument('identity', type=str, nullable=False)
+
     @auth_.login_required
-    def get(self):
-
-
-
+    def post(self):
+        identity = self.userParser.parse_args()['identity']
+        user = self.model.check_user(phone_number=identity, email=identity)
+        if user:
+            return user.profile()
+        else:
+            abort(404, ("userNotFound"))
 
 @auth_.verify_token
 def verify_token(token):
@@ -170,4 +176,5 @@ def verify_token(token):
 api.add_resource(SignupAPI, '/create_user/')
 api.add_resource(LoginAPI, '/login/')
 api.add_resource(VerifyPhone, '/verify_phone/')
+api.add_resource(Profile, '/profile/')
 api.add_resource(Home, '/')
