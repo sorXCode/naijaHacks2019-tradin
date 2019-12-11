@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tradin/http/user.dart';
+import 'package:tradin/http/authservice.dart';
 
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final _auth = Provider.of<AuthService>(context, listen: false);
+    final _auth = Provider.of<AuthService>(context, listen: false);
     final _profileDetails = {
       'Name': 'Akinola Grace',
       'Phone': '08110024432',
