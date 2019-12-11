@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tradin/models/signup.dart';
+import 'package:tradin/models/system.dart';
 import 'package:tradin/ui/user/widgetsConstants.dart';
 
 class SignUp extends StatefulWidget {
@@ -9,7 +12,12 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> with WidgetsConstants {
   @override
   Widget build(BuildContext context) {
+    final signUpState = Provider.of<SignUpState>(context, listen: false);
+    final signUpButtonEnabled =
+        Provider.of<SignUpState>(context, listen: true).activateSignUpButton;
+
     Widget nameField = TextField(
+      onChanged: (val) => signUpState.updateFullName(val),
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
@@ -22,6 +30,7 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
     );
 
     Widget phoneField = TextField(
+      onChanged: (val) => signUpState.updatePhone(val),
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
@@ -34,9 +43,13 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
     );
 
     Widget emailField = TextField(
+      onChanged: (val) => signUpState.updateEmail(val),
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
+        errorText: signUpState.result == Result.failed && signUpState.emailError
+            ? signUpState.errormessage
+            : null,
         errorStyle: TextStyle(color: Colors.white),
         hintText: "Email Address",
         hintStyle: fieldsHintStyle,
@@ -48,15 +61,19 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
     );
 
     Widget password = TextField(
+      onChanged: (val) => signUpState.updatePassword(val),
       decoration: InputDecoration(
-        fillColor: Colors.white,
-        filled: true,
-        hintText: "Password",
-        hintStyle: fieldsHintStyle,
-        border: OutlineInputBorder(borderRadius: borderRadius),
-        prefixIcon: Icon(Icons.lock),
-        suffixIcon: IconButton(icon: Icon(Icons.remove_red_eye)),
-      ),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: "Password",
+          hintStyle: fieldsHintStyle,
+          border: OutlineInputBorder(borderRadius: borderRadius),
+          prefixIcon: Icon(Icons.lock),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.remove_red_eye),
+            onPressed: () => signUpState.togglePasswordVisibility(),
+          )),
+      obscureText: !signUpState.visiblePassword,
     );
 
     Widget workCategory = TextField(
@@ -94,20 +111,30 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
     );
 
     Widget signUpButton = InkWell(
+      onTap: () => signUpButtonEnabled && signUpState.status == Status.idle
+          ? signUpState.userSignUp(context)
+          : null,
       splashColor: Colors.white,
       child: Container(
         alignment: Alignment.center,
         margin: EdgeInsets.symmetric(horizontal: 40),
         width: MediaQuery.of(context).size.width,
         height: 50,
-        decoration:BoxDecoration(
+        decoration: signUpState.status == Status.idle
+            ? BoxDecoration(
                 borderRadius: borderRadius,
-                color:Color.fromRGBO(28, 193, 202, 1)
+                color: signUpButtonEnabled
+                    ? Color.fromRGBO(28, 193, 202, 1)
+                    : Colors.grey,
               )
-            ,
-        child:Text('Register'),
+            : BoxDecoration(),
+        child: signUpState.status == Status.busy
+            ? CircularProgressIndicator()
+            : Text('Register'),
       ),
     );
+
+  
 
     Widget termsAndConditions = Row(
       children: <Widget>[
@@ -118,11 +145,14 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
           ),
         ),
         Checkbox(
-          value: true,
+          value: signUpState.agreed,
           onChanged: (val) {
             setState(
               () {
-                
+                signUpState.updateAgreed(val);
+                if (signUpState.agreed != false) {
+                  print('submit button should be active now');
+                }
               },
             );
           },
@@ -170,6 +200,8 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
                 IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
+                    // TODO: separate reset to dispose method
+                    signUpState.reset();
                     Navigator.pop(context);
                   },
                 )

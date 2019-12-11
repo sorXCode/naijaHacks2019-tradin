@@ -1,63 +1,58 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:tradin/models/user.dart';
 
 class AuthService extends ChangeNotifier {
   static final host = '10.0.2.2';
   static final port = '5000';
-  String get address => '$host:$port';
-
   SharedPreferences _prefs;
-
+  User _user;
+  String get address => '$host:$port';
+  User get user => _user;
 
   AuthService() {
-    getUser();
     loadSharedPreferences();
-  }
-
-  getUser() async {
-    _user = await _auth.currentUser();
-    return _user;
   }
 
   loadSharedPreferences() async =>
       _prefs = await SharedPreferences.getInstance();
 
   userLoggedIn() {
-    if (_user == null) {
-      getUser();
+    try {
+      _user = loadUserProfileFromStorage();
+    } catch (e) {
+      print(e.toString());
     }
-    print(user);
     return _user != null ? true : false;
   }
 
   getUserProfile() {
-    _user ??= getUser();
-    try {
-      return loadUserProfileFromStorage();
-    } on UserDetailsNotFound {
-      return loadUserProfileFromCloud();
-    } catch (e) {
-      print(e);
+    if (_user == null) {
+      try {
+        return loadUserProfileFromStorage();
+      } on UserDetailsNotFound {
+        return loadUserProfileFromCloud();
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
   handleSignUp(Map<String, dynamic> userDetails) async {
     try {
-      final result = await _auth.createUser(
-        fullName: userDetails['fullName'],
-        email: userDetails['email'],
-        phoneNumber: userDetails['password'],
-        password: userDetails['password'],
-      );
-      print(result);
-      // .timeout(Duration(seconds: 2), onTimeout: () =>AuthResult);
-      final user = result?.user;
-
-      if (user != null) {
-        return user;
-      }
+      final result = await http.post('$address/create_user/', body: {
+        'full_name': userDetails['fullName'],
+        'email': userDetails['email'],
+        'phoneNumber': userDetails['password'],
+        'password': userDetails['password'],
+      });
+      print(result.body);
+      _user = User.fromJson(json.decode(result.body));
     } catch (e) {
-      // 'er'.contains;
+      print(e.message);
       return e.message;
     }
   }
@@ -77,7 +72,7 @@ class AuthService extends ChangeNotifier {
   // }
 
   logout() async {
-    await _auth.signOut();
+    _prefs.clear();
     _user = null;
     notifyListeners();
   }
@@ -88,7 +83,7 @@ class AuthService extends ChangeNotifier {
       'fullName': _prefs.get('fullName'),
       'phone': _prefs.get('phone'),
     };
-    if (userProfile['email'] == _user?.email) {
+    if (userProfile['email'] == _user.email) {
       print(userProfile);
       return Future.value(userProfile);
     }
@@ -98,13 +93,7 @@ class AuthService extends ChangeNotifier {
   loadUserProfileFromCloud() async {
     final String _email = _user?.email;
     if (user != null) {
-      final userProfile = await _userCollectionReference
-          .where('email', isEqualTo: _email)
-          .limit(1)
-          .getDocuments()
-          .then((userDocument) => userDocument.documents[0].data)
-        ..remove('password');
-
+      final userProfile = await Future.delayed(Duration(seconds: 2), () => {});
       _saveUserProfileToStorage(userProfile);
       return userProfile;
     }

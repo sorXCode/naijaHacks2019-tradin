@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tradin/http/user.dart';
+import 'package:tradin/http/authservice.dart';
 import 'package:tradin/models/login.dart';
 import 'package:tradin/models/signup.dart';
 import 'package:tradin/router.dart';

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tradin/ui/user/widgetsConstants.dart';
+import 'package:provider/provider.dart';
 import 'package:tradin/custom_icons/CustomIcons.dart';
+import 'package:tradin/models/login.dart';
+import 'package:tradin/models/system.dart';
+import 'package:tradin/http/authservice.dart';
+import 'package:tradin/ui/user/widgetsConstants.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   @override
@@ -8,9 +13,15 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> with WidgetsConstants {
+
   @override
   Widget build(BuildContext context) {
+    final loginState = Provider.of<LoginState>(context, listen: false);
+    final loginButtonEnabled =
+        Provider.of<LoginState>(context).activateLoginButton;
+
     Widget identity = TextField(
+      onChanged: (val) => loginState.updateIdentity(val),
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
@@ -22,6 +33,7 @@ class _LoginState extends State<Login> with WidgetsConstants {
     );
 
     Widget password = TextField(
+      onChanged: (val) => loginState.updatePassword(val),
       decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
@@ -31,23 +43,41 @@ class _LoginState extends State<Login> with WidgetsConstants {
           prefixIcon: Icon(Icons.lock),
           suffixIcon: IconButton(
             icon: Icon(Icons.remove_red_eye),
+            onPressed: () => loginState.togglePasswordVisibility(),
           )),
+      obscureText: !loginState.visiblePassword,
     );
 
     var loginButton = InkWell(
-      onTap: () {},
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        return loginButtonEnabled && loginState.status == Status.idle
+            ? loginState.handleLogin(context)
+            : null;
+      },
       splashColor: Colors.white,
       child: Container(
-        alignment: Alignment.center,
-        margin: EdgeInsets.symmetric(horizontal: 40),
-        width: MediaQuery.of(context).size.width,
-        height: 50,
-        decoration: BoxDecoration(
-            borderRadius: borderRadius, color: Color.fromRGBO(28, 193, 202, 1)),
-        child: Text(
-          'Login',
-        ),
-      ),
+          alignment: Alignment.center,
+          margin: EdgeInsets.symmetric(horizontal: 40),
+          width: MediaQuery.of(context).size.width,
+          height: 50,
+          decoration: loginState.status == Status.idle
+              ? BoxDecoration(
+                  borderRadius: borderRadius,
+                  color: loginButtonEnabled
+                      ? loginState.result == Result.failed
+                          ? Colors.grey
+                          : Color.fromRGBO(28, 193, 202, 1)
+                      : Colors.grey,
+                )
+              : BoxDecoration(),
+          child: loginState.status == Status.busy
+              ? CircularProgressIndicator()
+              : Text(
+                  loginState.result == Result.failed
+                      ? loginState.erroressage
+                      : 'Login',
+                )),
     );
 
     var forgotPassword = InkWell(
@@ -121,7 +151,6 @@ class _LoginState extends State<Login> with WidgetsConstants {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Image.asset('images/logo.png', color: Colors.white,),
                     identity,
                     password,
                     loginButton, // SizedBox(height: 10),
