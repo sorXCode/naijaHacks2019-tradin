@@ -10,7 +10,7 @@ class AuthService extends ChangeNotifier {
   static final port = '5000';
   SharedPreferences _prefs;
   User _user;
-  String get address => '$host:$port';
+  String get address => 'http://$host:$port';
   User get user => _user;
 
   AuthService() {
@@ -43,17 +43,27 @@ class AuthService extends ChangeNotifier {
 
   handleSignUp(Map<String, dynamic> userDetails) async {
     try {
-      final result = await http.post('$address/create_user/', body: {
-        'full_name': userDetails['fullName'],
-        'email': userDetails['email'],
-        'phoneNumber': userDetails['password'],
-        'password': userDetails['password'],
-      });
-      print(result.body);
-      _user = User.fromJson(json.decode(result.body));
+      final result = await http.post(
+        '$address/create_user/',
+        body: {
+          'full_name': "${userDetails['fullName']}",
+          'email': "${userDetails['fullName']}",
+          'phone_number': "${userDetails['fullName']}",
+          'password': "${userDetails['fullName']}",
+        },
+      );
+      // DiRTY HACK.. FIX
+      _user = User.fromJson(json.decode(result.body)['user']);
+      if (_user.displayName == userDetails['fullName']) {
+        _saveUserProfileToStorage(_user);
+        return _user;
+      } else {
+        return null;
+      }
     } catch (e) {
-      print(e.message);
-      return e.message;
+      print('error found');
+      print('$e');
+      return e.toString();
     }
   }
 
@@ -92,17 +102,17 @@ class AuthService extends ChangeNotifier {
 
   loadUserProfileFromCloud() async {
     final String _email = _user?.email;
-    if (user != null) {
-      final userProfile = await Future.delayed(Duration(seconds: 2), () => {});
-      _saveUserProfileToStorage(userProfile);
-      return userProfile;
-    }
+    // if (user != null) {
+    //   final userProfile = await Future.delayed(Duration(seconds: 2), () => {});
+    //   _saveUserProfileToStorage(userProfile);
+    //   return userProfile;
+    // }
   }
 
-  void _saveUserProfileToStorage(Map<String, dynamic> userProfile) {
-    _prefs.setString('email', userProfile['email']);
-    _prefs.setString('fullName', userProfile['fullName']);
-    _prefs.setString('phone', userProfile['phone']);
+  void _saveUserProfileToStorage(User user) {
+    _prefs.setString('email', user.email);
+    _prefs.setString('fullName', user.displayName);
+    _prefs.setString('phone', user.phoneNumber);
   }
 
   handleLogin(Map<String, String> loginDetails) {}

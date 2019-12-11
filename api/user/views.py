@@ -51,7 +51,7 @@ class SignupAPI(Resource):
         args = self.userParser.parse_args()
         args = {field: value.strip() for field, value in args.items() if value}
         # TODO: Add validations to args,
-        if len(args) < 5:
+        if len(args) < 4:
             abort(400, "Some Parameter(s) are missing")
         user = self.model.create_user(full_name=args['full_name'],
                                       email=args['email'],
@@ -69,8 +69,8 @@ class SignupAPI(Resource):
                          'photoUrl': 'user.photo_url',
                          'email': user.email,
                          'phoneNumber': user.phone_number,
-                         'isEmailVerified': user.is_email_verified(),
-                         'isPhoneVerified': user.is_phone_number_verified(),
+                         'isEmailVerified': user.is_email_verified,
+                         'isPhoneVerified': user.is_phone_number_verified,
                          },
                 'token': auth_token,
                 }
@@ -93,6 +93,8 @@ class VerifyPhone(Resource):
         phone_number = self.verification_Parser.parse_args()['phone_number']
         if not phone_number or len(phone_number) < 13:
             return json.dumps({"status": "attach phone_number to verify 234xxxxxxxxxx"})
+        if phone_number[0] == 0:
+            phone_number = f"234{phone_number[1:]}"
         response = self.nexmo_client.start_verification(
             number=phone_number,
             brand="TradIn",
@@ -103,7 +105,7 @@ class VerifyPhone(Resource):
                   "request_id": response["request_id"]} \
             if response["status"] == "0" \
             else {"status": "Error: %s" % response["error_text"]}
-        return json.dumps(result)
+        return result
 
     def post(self):
         args = self.verification_Parser.parse_args()
@@ -112,7 +114,7 @@ class VerifyPhone(Resource):
         result = {"status": "Verificaton Successful"}\
             if response["status"] == "0" \
             else {"status": "Error: %s" % response["error_text"]}
-        return json.dumps(result)
+        return result
 
 
 class LoginAPI(Resource):
@@ -139,10 +141,17 @@ class LoginAPI(Resource):
 
 
 class Home(Resource):
-
     @auth_.login_required
     def get(self):
         return {"msg": "@Home_page"}
+
+
+class Profile(Resource):
+    
+    @auth_.login_required
+    def get(self):
+
+
 
 
 @auth_.verify_token
