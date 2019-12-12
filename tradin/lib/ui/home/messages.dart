@@ -53,7 +53,8 @@ class Messages extends StatelessWidget {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "Dear Customer, Your delivering address was changed on 12-10-19 to Kings MarCurrie",
+                          "Welcome to TradIn",
+                          style: TextStyle(fontWeight: FontWeight.bold),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         )
