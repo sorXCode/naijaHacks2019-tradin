@@ -44,6 +44,10 @@ class _MarketState extends State<Market> {
       'icon': 'images/icons/repair.png',
     },
   ];
+final comingSoon = SnackBar(
+                content: Text("Coming Soon...."),
+                backgroundColor: Colors.blue,
+                duration: Duration(seconds: 1));
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +63,7 @@ class _MarketState extends State<Market> {
             // highlightColor: Colors.grey,
             color: Colors.white,
             child: InkWell(
-              onTap: () => print("${item['title']} tapped"),
+              onTap: () => Scaffold.of(context).showSnackBar(comingSoon),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -96,7 +100,8 @@ class _MarketState extends State<Market> {
               icon: Icon(Icons.search),
               onPressed: () {
                 searchController.text.isNotEmpty
-                    ? Navigator.pushNamed(context, 'searchResults', arguments: searchBox())
+                    ? Navigator.pushNamed(context, 'searchResults',
+                        arguments: searchBox())
                     : null;
               },
             ),

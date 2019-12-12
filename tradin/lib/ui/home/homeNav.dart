@@ -120,76 +120,111 @@ class HomePage extends StatelessWidget {
       },
     ];
 
-    var feedenteries = enteries.map((entry) => Container(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-          decoration: BoxDecoration(
-            color: Colors.white30,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                entry['title'],
-                maxLines: 1,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                entry['description'],
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.category, color: Colors.blue),
-                      Text(
-                        entry['category'],
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w400),
+    Widget listItem(Map<String, dynamic> entry) => InkWell(
+          onTap: () {
+            showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                      title: Text(entry['title']),
+                      content: Text(
+                        entry['description'],
+                        textAlign: TextAlign.justify,
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.location_on, color: Colors.blue),
-                      Text(entry['location']),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.access_time, color: Colors.blue),
-                      Text(entry['updated_when']),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.payment, color: Colors.blue),
-                      Text("\#${entry['budget']}"),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text('Cancel', style: TextStyle(color: Colors.black),),
+                          onPressed: () => Navigator.pop(context, 'cancel'),
+                        ),
+                        FlatButton(
+                          child: Text('Submit Proposal'),
+                          onPressed: () =>
+                              Navigator.pop(context, 'submit proposal'),
+                        )
+                      ],
+                    )).then((val) {
+              if (val != null && val != 'cancel') {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                      'Your verification status is incomplete, update your details and try later..'),
+                  backgroundColor: Colors.blue,
+                  duration: Duration(milliseconds: 2500),
+                ));
+              }
+            });
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  entry['title'],
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  entry['description'],
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.category, color: Colors.blue),
+                        Text(
+                          entry['category'],
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w400),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.location_on, color: Colors.blue),
+                        Text(entry['location']),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.access_time, color: Colors.blue),
+                        Text(entry['updated_when']),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.payment, color: Colors.blue),
+                        Text("\#${entry['budget']}"),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ));
+        );
+    var feedenteries = enteries.map((entry) => listItem(entry));
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -211,20 +246,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-  Widget listItem(Color color, String title) => Container(
-        height: 100.0,
-        color: color,
-        child: Center(
-          child: Text(
-            "$title",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
 }

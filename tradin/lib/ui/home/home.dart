@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
           title: Text(item['title']),
           activeIcon: Image(
             image: AssetImage(item['icon']),
-            color: Colors.greenAccent,
+            color: Colors.blue,
           ),
           icon: Image(
             image: AssetImage(item['icon']),
@@ -37,12 +37,13 @@ class _HomeState extends State<Home> {
       items: _buttomNavBarItems,
       currentIndex: _currentTabIndex,
       type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.grey[200],
       onTap: (int index) {
         setState(() {
           _currentTabIndex = index;
         });
       },
-      selectedItemColor: Colors.greenAccent,
+      selectedItemColor: Colors.blue,
       unselectedItemColor: Colors.grey,
       showUnselectedLabels: true,
       showSelectedLabels: true,
