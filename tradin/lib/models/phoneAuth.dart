@@ -3,15 +3,26 @@ import 'package:flutter/widgets.dart';
 import 'package:tradin/http/authservice.dart';
 import 'package:tradin/models/system.dart';
 
-class PhoneAuth extends ChangeNotifier {
-  String _code;
+class PhoneAuthState extends ChangeNotifier {
+  String _code = "";
   Status _status = Status.idle;
   Result _result;
   BuildContext _context;
   AuthService _authService = AuthService();
 
+  String get code => _code;
+  bool get canSubmit => _canSubmit();
+  Status get status => _status;
+
+
   updateCode(String code) {
-    _code = code;
+    _code = _code.length < 4 ? _code + code : _code;
+    notifyListeners();
+  }
+
+  deleteLast() {
+    final length = _code.length;
+    _code = length > 0 ? _code.substring(0, length - 1) : _code;
     notifyListeners();
   }
 
@@ -21,12 +32,19 @@ class PhoneAuth extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _canSubmit(){
+    return _code.length == 4? true: false;
+  }
+
   handleSubmission(context) async {
     _initswitches();
     _context = context;
     notifyListeners();
-    final response = await _authService.verifyPhoneNumber(_code);
-    handleResponse(response);
+    print(_status.toString());
+  await  Future.delayed(Duration(seconds: 2));
+    notifyListeners();
+    // final response = await _authService.verifyPhoneNumber(_code);
+    // handleResponse(response);
     _status = Status.idle;
     notifyListeners();
   }
@@ -34,5 +52,4 @@ class PhoneAuth extends ChangeNotifier {
   handleResponse(response) {
     // body = response.body
   }
-
 }

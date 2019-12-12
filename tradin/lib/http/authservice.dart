@@ -7,6 +7,7 @@ import 'package:tradin/models/profile.dart';
 import 'package:tradin/models/user.dart';
 
 class AuthService extends ChangeNotifier {
+  String request_id;
   static final host = '10.0.2.2';
   static final port = '5000';
   SharedPreferences _prefs;
@@ -58,7 +59,7 @@ class AuthService extends ChangeNotifier {
   }
 
   handleLogin(Map<String, dynamic> loginDetails) async {
- try {
+    try {
       final response = await http.post(
         '$address/login/',
         body: {
@@ -76,9 +77,8 @@ class AuthService extends ChangeNotifier {
 
   handleResponse(response, Map<String, dynamic> details) {
     // _user keep resting to null on signup success
-    var footprint = details.containsKey('email')
-        ? details['email']
-        : details['identity'];
+    var footprint =
+        details.containsKey('email') ? details['email'] : details['identity'];
     // print(response.body);
     _user = response.statusCode == 409
         ? null
@@ -89,6 +89,38 @@ class AuthService extends ChangeNotifier {
       return _user;
     } else {
       return null;
+    }
+  }
+
+  requestPhoneVerification() async {
+    try {
+      final response = await http.post(
+        '$address/get_code/',
+        body: {
+          'phone_number': user.phoneNumber,
+        },
+      );
+      request_id = json.decode(response.body)['request_id'];
+    } catch (e) {
+      print('error found');
+      print('$e');
+    }
+  }
+
+  verifyPhoneNumber(code) async {
+    try {
+      final response = await http.post(
+        '$address/verify_phone/',
+        body: {
+          'request_id': request_id,
+          'code': code.toString(),
+        },
+      );
+      print(response.body);
+    } catch (e) {
+      print('error found');
+      print('$e');
+      return e.toString();
     }
   }
 
