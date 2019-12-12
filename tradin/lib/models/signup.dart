@@ -30,7 +30,7 @@ class SignUpState extends ChangeNotifier {
   bool get emailError => _emailError();
   Map<String, dynamic> get userDetails => {
         "fullName": fullName.trim(),
-        "phone": phone.trim(),
+        "phoneNumber": phone.trim(),
         "email": email.trim(),
         "password": password.trim(),
       };
@@ -127,7 +127,7 @@ class SignUpState extends ChangeNotifier {
     switch (response.runtimeType) {
       case User:
         _result = Result.success;
-        Navigator.popAndPushNamed(_context, 'home');
+        Navigator.pushNamed(_context, 'home');
         break;
       case String:
         _errormessage = response;
