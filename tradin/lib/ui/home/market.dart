@@ -6,8 +6,6 @@ class Market extends StatefulWidget {
 }
 
 class _MarketState extends State<Market> {
-  TextEditingController searchController = TextEditingController();
-
   List<Map<String, dynamic>> categories = [
     {
       'title': 'Art',
@@ -83,45 +81,54 @@ class _MarketState extends State<Market> {
           ),
         ));
 
-    return SafeArea(
-      child: Container(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 20.0, bottom: 10.0, right: 12.0, left: 12.0),
-              child: TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12))),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () =>
-                        print("searching ${searchController.text}"),
-                  ),
-                  labelText: 'Search',
-                ),
-              ),
+    Widget searchBox() {
+      TextEditingController searchController = TextEditingController();
+      return Padding(
+        padding: const EdgeInsets.only(
+            top: 20.0, bottom: 10.0, right: 12.0, left: 12.0),
+        child: TextField(
+          maxLines: 1,
+          controller: searchController,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            suffixIcon: IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                searchController.text.isNotEmpty
+                    ? Navigator.pushNamed(context, 'searchResults', arguments: searchBox())
+                    : null;
+              },
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: GridView.count(
-                primary: false,
-                crossAxisCount: 3,
-                childAspectRatio: 0.9,
-                padding: EdgeInsets.all(5.0),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                children: <Widget>[
-                  ..._gridViewEntries,
-                ],
-              ),
-            ),
-          ],
+            labelText: 'Search',
+          ),
         ),
+      );
+    }
+
+    return Container(
+      alignment: Alignment.center,
+      color: Colors.grey[100],
+      child: Column(
+        children: <Widget>[
+          searchBox(),
+          SizedBox(
+            height: 20,
+          ),
+          Expanded(
+            child: GridView.count(
+              primary: false,
+              crossAxisCount: 3,
+              childAspectRatio: 0.9,
+              padding: EdgeInsets.all(5.0),
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              children: <Widget>[
+                ..._gridViewEntries,
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
