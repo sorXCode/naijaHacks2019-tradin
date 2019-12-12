@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tradin/http/authservice.dart';
 import 'package:tradin/models/system.dart';
+import 'package:tradin/models/user.dart';
 
 class LoginState extends ChangeNotifier {
 
@@ -17,6 +19,7 @@ class LoginState extends ChangeNotifier {
   Status get status => _status;
   Result get result => _result;
   String get erroressage => _errormessage;
+  AuthService _authService = AuthService();
   // bool get activate => _activate;
 
   Map<String, String> get loginDetails => {
@@ -73,28 +76,28 @@ resetFields(){
     
     _context = context;
     notifyListeners();
-    // final response = await _authService.handleLogin(loginDetails);
-    // //  await Future.delayed(Duration(seconds: 10));
-    // handleResponse(_context, response);
+    final response = await _authService.handleLogin(loginDetails);
+    //  await Future.delayed(Duration(seconds: 2));
+    handleResponse(_context, response);
     _status = Status.idle;
     notifyListeners();
   }
 
   // TODO: DRY already in signup; make them a class method
   handleResponse(context, response) {
-    // switch (response.runtimeType) {
-    //   case FirebaseUser:
-    //     _result = Result.success;
-    //     Navigator.pushNamedAndRemoveUntil(context, 'home', ModalRoute.withName('home'));
-    //     // Navigator.pushNamed(context, 'home');
-    //     break;
-    //   case String:
-    //     _errormessage =  response.contains(RegExp(r'user|password|email'))? 'Incorrect Details' : 'Network Error';
-    //     _result = Result.failed;
-    //     break;
-    //   // default:
-    //   //   this._result = Result.failed;
-    // }
+    switch (response.runtimeType) {
+      case User:
+        _result = Result.success;
+        Navigator.pushNamedAndRemoveUntil(context, 'home', ModalRoute.withName('home'));
+        // Navigator.pushNamed(context, 'home');
+        break;
+      case String:
+        _errormessage =  response.contains(RegExp(r'user|password|email'))? 'Incorrect Details' : 'Network Error';
+        _result = Result.failed;
+        break;
+      // default:
+      //   this._result = Result.failed;
+    }
   }
 }
 

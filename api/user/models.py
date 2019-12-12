@@ -4,22 +4,26 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from itsdangerous import (
     TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
 from . import db, ma, login_manager
+import json
 
 
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column("firstName", db.String(50), nullable=False)
-    email = db.Column("email", db.String(50), index=True, unique=True, nullable=False)
-    phone_number = db.Column("phoneNumber", db.String(11), unique=True, index=True, nullable=False)
+    email = db.Column("email", db.String(50), index=True,
+                      unique=True, nullable=False)
+    phone_number = db.Column("phoneNumber", db.String(
+        11), unique=True, index=True, nullable=False)
     photo_url = db.Column("photoUrl", db.String(), unique=True)
     verified_email = db.Column("verifiedEmail", db.Boolean(), default=False)
-    verified_phone_number = db.Column("verifiedPhone", db.Boolean(), default=False)
+    verified_phone_number = db.Column(
+        "verifiedPhone", db.Boolean(), default=False)
     password_hash = db.Column("passwordHash", db.String(128), nullable=False)
-    creation_date = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp(), nullable=False)
-    last_login = db.Column(db.DateTime, index=False, unique=False, nullable=True)
-
-  
+    creation_date = db.Column(
+        db.TIMESTAMP, server_default=db.func.current_timestamp(), nullable=False)
+    last_login = db.Column(db.DateTime, index=False,
+                           unique=False, nullable=True)
 
     @property
     def password(self):
@@ -49,6 +53,8 @@ class User(UserMixin, db.Model):
     def check_user(cls, phone_number=None, email=None):
         user = cls.query.filter_by(email=email).first(
         ) or cls.query.filter_by(phone_number=phone_number).first()
+        if not user:
+            print("No USER Found")
         return user or False
 
     def verify_password(self, password):
@@ -61,7 +67,7 @@ class User(UserMixin, db.Model):
                        phone_number=phone_number)
             user.password = password
             db.session.add(user)
-            db.session.commit()
+            # db.session.commit()
             return user
         return None
 
@@ -73,7 +79,7 @@ class User(UserMixin, db.Model):
             return user, auth_token
         return None, None
 
-    def generate_auth_token(self, expiration=3600):
+    def generate_auth_token(self, expiration=864000):
         s = Serializer(current_app.config.get(
             'SECRET_KEY'), expires_in=expiration)
         return s.dumps({'id': str(self.id)}).decode('utf-8')
@@ -92,6 +98,16 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return "<User {}>".format(self.full_name)
+    
+
+    def profile(self):
+        return {'displayName': self.full_name,
+                         'photoUrl': 'user.photo_url',
+                         'email': self.email,
+                         'phoneNumber': self.phone_number,
+                         'isEmailVerified': self.is_email_verified,
+                         'isPhoneVerified': self.is_phone_number_verified,
+                         }
 
 
 @login_manager.user_loader

@@ -4,8 +4,8 @@ class User {
   String _photoUrl;
   String _email;
   String _phoneNumber;
-  String _isEmailVerified;
-  String _isPhoneVerified;
+  bool _isEmailVerified;
+  bool _isPhoneVerified;
 
   User(
       {String uid,
@@ -13,8 +13,8 @@ class User {
       String photoUrl,
       String email,
       String phoneNumber,
-      String isEmailVerified,
-      String isPhoneVerified}) {
+      bool isEmailVerified,
+      bool isPhoneVerified}) {
     this._uid = uid;
     this._displayName = displayName;
     this._photoUrl = photoUrl;
@@ -34,11 +34,11 @@ class User {
   set email(String email) => _email = email;
   String get phoneNumber => _phoneNumber;
   set phoneNumber(String phoneNumber) => _phoneNumber = phoneNumber;
-  String get isEmailVerified => _isEmailVerified;
-  set isEmailVerified(String isEmailVerified) =>
+  bool get isEmailVerified => _isEmailVerified;
+  set isEmailVerified(bool isEmailVerified) =>
       _isEmailVerified = isEmailVerified;
-  String get isPhoneVerified => _isPhoneVerified;
-  set isPhoneVerified(String isPhoneVerified) =>
+  bool get isPhoneVerified => _isPhoneVerified;
+  set isPhoneVerified(bool isPhoneVerified) =>
       _isPhoneVerified = isPhoneVerified;
 
   User.fromJson(Map<String, dynamic> json) {

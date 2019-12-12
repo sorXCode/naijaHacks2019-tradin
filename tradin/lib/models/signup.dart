@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tradin/http/authservice.dart';
 import 'package:tradin/models/system.dart';
+import 'package:tradin/models/user.dart';
 
 class SignUpState extends ChangeNotifier {
   String _fullName = '';
@@ -14,6 +16,7 @@ class SignUpState extends ChangeNotifier {
   Result _result;
   String _errormessage;
   BuildContext _context;
+  AuthService _authService = AuthService();
 
   Status get status => _status;
   String get fullName => _fullName;
@@ -26,10 +29,10 @@ class SignUpState extends ChangeNotifier {
   String get errormessage => _errormessage;
   bool get emailError => _emailError();
   Map<String, dynamic> get userDetails => {
-        "fullName": fullName,
-        "phone": phone,
-        "email": email,
-        "password": password,
+        "fullName": fullName.trim(),
+        "phoneNumber": phone.trim(),
+        "email": email.trim(),
+        "password": password.trim(),
       };
 
   bool get activateSignUpButton => validateFields();
@@ -58,20 +61,23 @@ class SignUpState extends ChangeNotifier {
     _resetSwitches();
   }
 
-  updateFullName(String fullName) {
+  updateFullName(String fullName) async {
     _resetSwitches();
+    print(fullName);
     this._fullName = fullName;
     notifyListeners();
   }
 
   updatePhone(String phone) {
     _resetSwitches();
+    print(phone);
     this._phone = phone;
     notifyListeners();
   }
 
   updateEmail(String email) {
     _resetSwitches();
+    print(email);
     this._email = email;
     notifyListeners();
   }
@@ -109,24 +115,26 @@ class SignUpState extends ChangeNotifier {
     _context = context;
     _status = Status.busy;
     notifyListeners();
-    // final response = await _authService.handleSignUp(userDetails);
-    // handleResponse(response);
+    // await Future.delayed(Duration(seconds: 2));
+    var response = await _authService.handleSignUp(userDetails);
+    handleResponse(response);
     _status = Status.idle;
     notifyListeners();
   }
 
   handleResponse(response) {
-    // switch (response.runtimeType) {
-    //   case FirebaseUser:
-    //     _result = Result.success;
-    //     Navigator.popAndPushNamed(_context, 'home');
-    //     break;
-    //   case String:
-    //     _errormessage = response;
-    //     _result = Result.failed;
-    //     break;
-      // default:
-      //   this._result = Result.failed;
-    // }
+    print(response);
+    switch (response.runtimeType) {
+      case User:
+        _result = Result.success;
+        Navigator.pushNamed(_context, 'home');
+        break;
+      case String:
+        _errormessage = response;
+        _result = Result.failed;
+        break;
+    default:
+      this._result = Result.failed;
+    }
   }
 }

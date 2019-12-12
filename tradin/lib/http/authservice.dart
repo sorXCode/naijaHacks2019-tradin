@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:tradin/models/profile.dart';
 import 'package:tradin/models/user.dart';
 
 class AuthService extends ChangeNotifier {
@@ -10,11 +11,19 @@ class AuthService extends ChangeNotifier {
   static final port = '5000';
   SharedPreferences _prefs;
   User _user;
-  String get address => '$host:$port';
+  Profile _profile;
+  String get address => 'http://$host:$port';
   User get user => _user;
 
   AuthService() {
     loadSharedPreferences();
+    _getUserFromSharedPreferences();
+  }
+
+  _getUserFromSharedPreferences() async {
+    if (_prefs?.containsKey('user') == true) {
+      _user = User.fromJson(json.decode(_prefs.get('user')));
+    }
   }
 
   loadSharedPreferences() async =>
@@ -24,57 +33,100 @@ class AuthService extends ChangeNotifier {
     try {
       _user = loadUserProfileFromStorage();
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
     }
     return _user != null ? true : false;
   }
 
-  getUserProfile() {
-    if (_user == null) {
-      try {
-        return loadUserProfileFromStorage();
-      } on UserDetailsNotFound {
-        return loadUserProfileFromCloud();
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
   handleSignUp(Map<String, dynamic> userDetails) async {
     try {
-      final result = await http.post('$address/create_user/', body: {
-        'full_name': userDetails['fullName'],
-        'email': userDetails['email'],
-        'phoneNumber': userDetails['password'],
-        'password': userDetails['password'],
-      });
-      print(result.body);
-      _user = User.fromJson(json.decode(result.body));
+      final response = await http.post(
+        '$address/create_user/',
+        body: {
+          'full_name': "${userDetails['fullName']}",
+          'email': "${userDetails['email']}",
+          'phone_number': "${userDetails['phoneNumber']}",
+          'password': "${userDetails['password']}",
+        },
+      );
+      return handleResponse(response, userDetails);
     } catch (e) {
-      print(e.message);
-      return e.message;
+      print('error found');
+      print('$e');
+      return e.toString();
     }
   }
 
-  // handleLogin(loginDetails) async {
-  //   try {
-  //     final result = await _auth.signInWithEmailAndPassword(
-  //         email: loginDetails['identity'], password: loginDetails['password']);
-  //     // .timeout(Duration(seconds: 2), onTimeout: () =>AuthResult);
-  //     final user = result?.user;
-  //     print(user);
-  //     return user;
-  //   } catch (e) {
-  //     print('${e.message}');
-  //     return e.message;
-  //   }
-  // }
+  handleLogin(Map<String, dynamic> loginDetails) async {
+ try {
+      final response = await http.post(
+        '$address/login/',
+        body: {
+          'identity': "${loginDetails['identity']}",
+          'password': "${loginDetails['password']}",
+        },
+      );
+      return handleResponse(response, loginDetails);
+    } catch (e) {
+      print('error found');
+      print('$e');
+      return e.toString();
+    }
+  }
+
+  handleResponse(response, Map<String, dynamic> details) {
+    // _user keep resting to null on signup success
+    var footprint = details.containsKey('email')
+        ? details['email']
+        : details['identity'];
+    // print(response.body);
+    _user = response.statusCode == 409
+        ? null
+        : User.fromJson(json.decode(response.body)['user']);
+    if (_user?.email == footprint || _user?.phoneNumber == footprint) {
+      // _saveLastAuthorizedPhoneNumber(_user.phoneNumber);
+      _prefs.setString('user', json.encode(_user));
+      return _user;
+    } else {
+      return null;
+    }
+  }
 
   logout() async {
     _prefs.clear();
     _user = null;
     notifyListeners();
+  }
+
+  getUserProfile() {
+    if (_user == null) {
+      _getUserFromSharedPreferences();
+      // print(_user.displayName);
+      // try {
+      //   return loadUserProfileFromStorage();
+      // } on UserDetailsNotFound {
+      // return loadUserProfileFromCloud();
+      // } catch (e) {
+      //   print(e);
+      // }
+    }
+    final fields = [
+      "displayName",
+      "email",
+      "phoneNumber",
+      "isPhoneVerified",
+      "isEmailVerified",
+    ];
+    var entries = {};
+    _user.toJson().map((k, v) {
+      if (fields.contains(k)) {
+        v ??= false;
+        entries.putIfAbsent(k, () => v);
+      }
+      return MapEntry(k, v);
+    });
+
+    return Future.value(entries);
   }
 
   loadUserProfileFromStorage() {
@@ -85,27 +137,37 @@ class AuthService extends ChangeNotifier {
     };
     if (userProfile['email'] == _user.email) {
       print(userProfile);
-      return Future.value(userProfile);
+      var userprofile = _user.toJson();
+      print(userprofile);
+      return Future.value(userprofile);
     }
     return throw UserDetailsNotFound();
   }
 
   loadUserProfileFromCloud() async {
-    final String _email = _user?.email;
-    if (user != null) {
-      final userProfile = await Future.delayed(Duration(seconds: 2), () => {});
-      _saveUserProfileToStorage(userProfile);
-      return userProfile;
+    if (_user != null) {
+      final response = await http
+          .post("$address/profile", body: {'identity': _user.phoneNumber});
+      final _userProfile = Profile.fromJson(json.decode(response.body));
+      _saveUserProfileToStorage(_userProfile);
+      return _userProfile;
     }
   }
 
-  void _saveUserProfileToStorage(Map<String, dynamic> userProfile) {
-    _prefs.setString('email', userProfile['email']);
-    _prefs.setString('fullName', userProfile['fullName']);
-    _prefs.setString('phone', userProfile['phone']);
+  // Muddy water
+  _saveLastAuthorizedPhoneNumber(phoneNumber) {
+    _prefs.setString('lastAuthorizedPhone', phoneNumber);
   }
 
-  handleLogin(Map<String, String> loginDetails) {}
+  _getLastAuthorizedPhoneNumber(phoneNumber) {
+    _prefs.getString('lastAuthorizedPhone');
+  }
+
+  void _saveUserProfileToStorage(Profile profile) {
+    _prefs.setString('email', profile.email);
+    _prefs.setString('fullName', profile.displayName);
+    _prefs.setString('phone', profile.phoneNumber);
+  }
 }
 
 class UserDetailsNotFound implements Exception {

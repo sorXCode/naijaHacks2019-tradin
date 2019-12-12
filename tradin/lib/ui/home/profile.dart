@@ -22,32 +22,39 @@ class Profile extends StatelessWidget {
         // initialData: InitialData,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return snapshot.hasData
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              ? Stack(
+                alignment: Alignment.center,
+              
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    CircleAvatar(
-                      backgroundImage:
-                          AssetImage('${_profileDetails['profile_image']}'),
-                      radius: 70.0,
-                      child: Container(
-                          margin: EdgeInsets.only(left: 80, bottom: 5),
-                          padding: EdgeInsets.only(),
-                          alignment: Alignment.bottomCenter,
-                          child: IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () {
-                              print('pick profile picture');
-                            },
-                            iconSize: 30,
-                          )),
+                    // CircleAvatar(
+                    //   backgroundImage:
+                    //       AssetImage('${_profileDetails['profile_image']}'),
+                    //   radius: 70.0,
+                    //   child: Container(
+                    //       margin: EdgeInsets.only(left: 80, bottom: 5),
+                    //       padding: EdgeInsets.only(),
+                    //       alignment: Alignment.bottomCenter,
+                    //       child: IconButton(
+                    //         icon: Icon(Icons.edit),
+                    //         onPressed: () {
+                    //           print('pick profile picture');
+                    //         },
+                    //         iconSize: 30,
+                    //       )),
+                    // ),
+                          
+                    Container(
+                      alignment: Alignment.topCenter,
+                      child: Image(image: AssetImage('${_profileDetails['profile_image']}'),),
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 5.0),
+                      margin: EdgeInsets.fromLTRB(16.0, 200, 16.0, 5.0),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      height: MediaQuery.of(context).size.height * 0.50,
+                      height: MediaQuery.of(context).size.height * 0.80,
                       child: ListView.separated(
                         padding: EdgeInsets.only(
                           top: 8.0,

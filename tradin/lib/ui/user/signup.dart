@@ -110,31 +110,6 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
       ),
     );
 
-    Widget signUpButton = InkWell(
-      onTap: () => signUpButtonEnabled && signUpState.status == Status.idle
-          ? signUpState.userSignUp(context)
-          : null,
-      splashColor: Colors.white,
-      child: Container(
-        alignment: Alignment.center,
-        margin: EdgeInsets.symmetric(horizontal: 40),
-        width: MediaQuery.of(context).size.width,
-        height: 50,
-        decoration: signUpState.status == Status.idle
-            ? BoxDecoration(
-                borderRadius: borderRadius,
-                color: signUpButtonEnabled
-                    ? Color.fromRGBO(28, 193, 202, 1)
-                    : Colors.grey,
-              )
-            : BoxDecoration(),
-        child: signUpState.status == Status.busy
-            ? CircularProgressIndicator()
-            : Text('Register'),
-      ),
-    );
-
-  
 
     Widget termsAndConditions = Row(
       children: <Widget>[
@@ -160,6 +135,31 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
       ],
     );
 
+    Widget signUpButton = InkWell(
+      onTap: () => signUpButtonEnabled && signUpState.status == Status.idle
+          ? signUpState.userSignUp(context)
+          : null,
+      splashColor: Colors.white,
+      child: Container(
+        alignment: Alignment.center,
+        margin: EdgeInsets.symmetric(horizontal: 40),
+        width: MediaQuery.of(context).size.width,
+        height: 50,
+        decoration: signUpState.status == Status.idle
+            ? BoxDecoration(
+                borderRadius: borderRadius,
+                color: signUpButtonEnabled
+                    ? Color.fromRGBO(28, 193, 202, 1)
+                    : Colors.grey,
+              )
+            : BoxDecoration(),
+        child: signUpState.status == Status.busy
+            ? CircularProgressIndicator()
+            : Text('Register'),
+      ),
+    );
+
+  
     Widget _vspace = SizedBox(height: 10);
 
     // Widget errorMessage = SizedBox(
