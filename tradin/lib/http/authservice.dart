@@ -49,18 +49,7 @@ class AuthService extends ChangeNotifier {
           'password': "${userDetails['password']}",
         },
       );
-      // _user keep resting to null on signup success
-      _user = response.statusCode == 409
-          ? null
-          : User.fromJson(json.decode(response.body)['user']);
-      if (_user?.displayName == userDetails['fullName']) {
-        print(_user);
-        // _saveLastAuthorizedPhoneNumber(_user.phoneNumber);
-        _prefs.setString('user', json.encode(_user));
-        return _user;
-      } else {
-        return null;
-      }
+      return handleResponse(response, userDetails);
     } catch (e) {
       print('error found');
       print('$e');
@@ -68,19 +57,40 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  // handleLogin(loginDetails) async {
-  //   try {
-  //     final result = await _auth.signInWithEmailAndPassword(
-  //         email: loginDetails['identity'], password: loginDetails['password']);
-  //     // .timeout(Duration(seconds: 2), onTimeout: () =>AuthResult);
-  //     final user = result?.user;
-  //     print(user);
-  //     return user;
-  //   } catch (e) {
-  //     print('${e.message}');
-  //     return e.message;
-  //   }
-  // }
+  handleLogin(Map<String, dynamic> loginDetails) async {
+ try {
+      final response = await http.post(
+        '$address/login/',
+        body: {
+          'identity': "${loginDetails['identity']}",
+          'password': "${loginDetails['password']}",
+        },
+      );
+      return handleResponse(response, loginDetails);
+    } catch (e) {
+      print('error found');
+      print('$e');
+      return e.toString();
+    }
+  }
+
+  handleResponse(response, Map<String, dynamic> details) {
+    // _user keep resting to null on signup success
+    var footprint = details.containsKey('email')
+        ? details['email']
+        : details['identity'];
+    // print(response.body);
+    _user = response.statusCode == 409
+        ? null
+        : User.fromJson(json.decode(response.body)['user']);
+    if (_user?.email == footprint || _user?.phoneNumber == footprint) {
+      // _saveLastAuthorizedPhoneNumber(_user.phoneNumber);
+      _prefs.setString('user', json.encode(_user));
+      return _user;
+    } else {
+      return null;
+    }
+  }
 
   logout() async {
     _prefs.clear();
@@ -111,7 +121,7 @@ class AuthService extends ChangeNotifier {
     _user.toJson().map((k, v) {
       if (fields.contains(k)) {
         v ??= false;
-        entries.putIfAbsent(k, ()=> v);
+        entries.putIfAbsent(k, () => v);
       }
       return MapEntry(k, v);
     });
@@ -158,8 +168,6 @@ class AuthService extends ChangeNotifier {
     _prefs.setString('fullName', profile.displayName);
     _prefs.setString('phone', profile.phoneNumber);
   }
-
-  handleLogin(Map<String, String> loginDetails) {}
 }
 
 class UserDetailsNotFound implements Exception {

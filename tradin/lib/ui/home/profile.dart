@@ -46,7 +46,7 @@ class Profile extends StatelessWidget {
                           
                     Container(
                       alignment: Alignment.topCenter,
-                      child: Image(image: AssetImage('${_profileDetails['profile_image']}'),repeat: ,),
+                      child: Image(image: AssetImage('${_profileDetails['profile_image']}'),),
                     ),
                     Container(
                       margin: EdgeInsets.fromLTRB(16.0, 200, 16.0, 5.0),

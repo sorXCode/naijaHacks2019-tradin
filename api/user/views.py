@@ -49,6 +49,7 @@ class SignupAPI(Resource):
         # TODO: return all errors as message
         # time.sleep(1.5)
         args = self.userParser.parse_args()
+        print(args)
         args = {field: value.strip() for field, value in args.items() if value}
         # TODO: Add validations to args,
         if len(args) < 4:
@@ -133,9 +134,19 @@ class LoginAPI(Resource):
         identity, password = args['identity'], args['password']
 
         user, auth_token = self.model.login(identity, password)
+        uid = secrets.token_hex(10)
         if user:
             response_object = {'status': 'Success',
-                               'message': 'Login successful', 'token': auth_token}
+                               'message': 'Login successful',
+                               'user': {'uid': uid,
+                                        'displayName': user.full_name,
+                                        'photoUrl': 'user.photo_url',
+                                        'email': user.email,
+                                        'phoneNumber': user.phone_number,
+                                        'isEmailVerified': user.is_email_verified,
+                                        'isPhoneVerified': user.is_phone_number_verified,
+                                        },
+                               'token': auth_token}
         g.user = user
         return jsonify(response_object)
 
@@ -159,6 +170,7 @@ class Profile(Resource):
             return user.profile()
         else:
             abort(404, ("userNotFound"))
+
 
 @auth_.verify_token
 def verify_token(token):

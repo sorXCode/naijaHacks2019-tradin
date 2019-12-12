@@ -67,7 +67,7 @@ class User(UserMixin, db.Model):
                        phone_number=phone_number)
             user.password = password
             db.session.add(user)
-            db.session.commit()
+            # db.session.commit()
             return user
         return None
 
@@ -107,7 +107,7 @@ class User(UserMixin, db.Model):
                          'phoneNumber': self.phone_number,
                          'isEmailVerified': self.is_email_verified,
                          'isPhoneVerified': self.is_phone_number_verified,
-                         },
+                         }
 
 
 @login_manager.user_loader
