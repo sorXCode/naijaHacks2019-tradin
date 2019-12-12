@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tradin/http/authservice.dart';
 import 'package:tradin/models/phoneAuth.dart';
 import 'package:tradin/models/system.dart';
 import 'package:tradin/ui/user/widgetsConstants.dart';
 
-class PhoneAuth extends StatelessWidget with WidgetsConstants {
+class PhoneAuth extends StatefulWidget {
+  @override
+  _PhoneAuthState createState() => _PhoneAuthState();
+}
+
+class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Provider.of<AuthService>(context).requestPhoneVerification();
+  }
+
   @override
   Widget build(BuildContext context) {
     final phoneAuthState = Provider.of<PhoneAuthState>(context);
@@ -99,7 +111,11 @@ class PhoneAuth extends StatelessWidget with WidgetsConstants {
                               ? phoneAuthState.handleSubmission(context)
                               : null,
                         )
-                      : Padding(padding: EdgeInsets.all(15),child:CircularProgressIndicator(strokeWidth: 4,)),
+                      : Padding(
+                          padding: EdgeInsets.all(15),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 4,
+                          )),
                 ]),
           ),
         ],
@@ -119,6 +135,17 @@ class PhoneAuth extends StatelessWidget with WidgetsConstants {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            SizedBox(
+                height: 30,
+                child: phoneAuthState.errorMessage == null
+                    ? Text('')
+                    : Text(
+                        '${phoneAuthState.errorMessage}',
+                        style: TextStyle(
+                            color: Colors.redAccent,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      )),
             codeBox,
             numberPad,
           ],

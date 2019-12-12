@@ -93,35 +93,39 @@ class AuthService extends ChangeNotifier {
   }
 
   requestPhoneVerification() async {
-    try {
-      final response = await http.post(
-        '$address/get_code/',
-        body: {
-          'phone_number': user.phoneNumber,
-        },
-      );
-      request_id = json.decode(response.body)['request_id'];
-    } catch (e) {
-      print('error found');
-      print('$e');
-    }
+    _getUserFromSharedPreferences();
+    print('phone number is: ${user.phoneNumber}');
+    // try {
+    //   final response = await http.post(
+    //     '$address/get_code/',
+    //     body: {
+    //       'phone_number': user.phoneNumber,
+    //     },
+    //   );
+    //   print(response.toString());
+    //   request_id = json.decode(response.body)['request_id'];
+    // } catch (e) {
+    //   print('error found');
+    //   print('$e');
+    // }
   }
 
   verifyPhoneNumber(code) async {
-    try {
-      final response = await http.post(
-        '$address/verify_phone/',
-        body: {
-          'request_id': request_id,
-          'code': code.toString(),
-        },
-      );
-      print(response.body);
-    } catch (e) {
-      print('error found');
-      print('$e');
-      return e.toString();
-    }
+    // try {
+    //   final response = await http.post(
+    //     '$address/verify_phone/',
+    //     body: {
+    //       'request_id': request_id,
+    //       'code': code,
+    //     },
+    //   );
+    //   print(response.body);
+    // } catch (e) {
+    //   print('error found');
+    //   print('$e');
+    //   return e.toString();
+    // }
+    return "successful";
   }
 
   logout() async {
