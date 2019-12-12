@@ -29,10 +29,10 @@ class SignUpState extends ChangeNotifier {
   String get errormessage => _errormessage;
   bool get emailError => _emailError();
   Map<String, dynamic> get userDetails => {
-        "fullName": fullName,
-        "phone": phone,
-        "email": email,
-        "password": password,
+        "fullName": fullName.trim(),
+        "phone": phone.trim(),
+        "email": email.trim(),
+        "password": password.trim(),
       };
 
   bool get activateSignUpButton => validateFields();
@@ -63,18 +63,21 @@ class SignUpState extends ChangeNotifier {
 
   updateFullName(String fullName) async {
     _resetSwitches();
+    print(fullName);
     this._fullName = fullName;
     notifyListeners();
   }
 
   updatePhone(String phone) {
     _resetSwitches();
+    print(phone);
     this._phone = phone;
     notifyListeners();
   }
 
   updateEmail(String email) {
     _resetSwitches();
+    print(email);
     this._email = email;
     notifyListeners();
   }

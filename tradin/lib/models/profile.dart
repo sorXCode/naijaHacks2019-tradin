@@ -3,8 +3,8 @@ class Profile {
   String _photoUrl;
   String _email;
   String _phoneNumber;
-  String _isEmailVerified;
-  String _isPhoneVerified;
+  bool _isEmailVerified;
+  bool _isPhoneVerified;
   String _rating;
   String _usertype;
   String _completedTrades;
@@ -18,8 +18,8 @@ class Profile {
       String photoUrl,
       String email,
       String phoneNumber,
-      String isEmailVerified,
-      String isPhoneVerified,
+      bool isEmailVerified,
+      bool isPhoneVerified,
       String rating,
       String usertype,
       String completedTrades,
@@ -50,11 +50,11 @@ class Profile {
   set email(String email) => _email = email;
   String get phoneNumber => _phoneNumber;
   set phoneNumber(String phoneNumber) => _phoneNumber = phoneNumber;
-  String get isEmailVerified => _isEmailVerified;
-  set isEmailVerified(String isEmailVerified) =>
+  bool get isEmailVerified => _isEmailVerified;
+  set isEmailVerified(bool isEmailVerified) =>
       _isEmailVerified = isEmailVerified;
-  String get isPhoneVerified => _isPhoneVerified;
-  set isPhoneVerified(String isPhoneVerified) =>
+  bool get isPhoneVerified => _isPhoneVerified;
+  set isPhoneVerified(bool isPhoneVerified) =>
       _isPhoneVerified = isPhoneVerified;
   String get rating => _rating;
   set rating(String rating) => _rating = rating;
