@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
           title: Text(item['title']),
           activeIcon: Image(
             image: AssetImage(item['icon']),
-            color: Colors.blue,
+            color: Colors.greenAccent,
           ),
           icon: Image(
             image: AssetImage(item['icon']),
@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
           _currentTabIndex = index;
         });
       },
-      selectedItemColor: Colors.lightBlue,
+      selectedItemColor: Colors.greenAccent,
       unselectedItemColor: Colors.grey,
       showUnselectedLabels: true,
       showSelectedLabels: true,
@@ -51,6 +51,16 @@ class _HomeState extends State<Home> {
     );
 
     return Scaffold(
+      floatingActionButton: _currentTabIndex == 3
+          ? IconButton(
+              icon: Icon(
+                Icons.power_settings_new,
+                color: Colors.black54,
+                size: 40,
+              ),
+              onPressed: () {},
+            )
+            : null,
       body: _tabPages[_currentTabIndex],
       bottomNavigationBar: bottomNavBar,
     );
@@ -59,7 +69,7 @@ class _HomeState extends State<Home> {
 
 var _bottomNavigationBarItems = [
   {
-    'title': 'Home',
+    'title': 'Feeds',
     'icon': 'images/icons/home.png',
     'activity': HomePage(),
   },

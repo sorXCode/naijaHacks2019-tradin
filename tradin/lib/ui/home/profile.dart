@@ -23,90 +23,105 @@ class Profile extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return snapshot.hasData
               ? Stack(
-                alignment: Alignment.center,
-              
+                  alignment: Alignment.center,
+
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    // CircleAvatar(
-                    //   backgroundImage:
-                    //       AssetImage('${_profileDetails['profile_image']}'),
-                    //   radius: 70.0,
-                    //   child: Container(
-                    //       margin: EdgeInsets.only(left: 80, bottom: 5),
-                    //       padding: EdgeInsets.only(),
-                    //       alignment: Alignment.bottomCenter,
-                    //       child: IconButton(
-                    //         icon: Icon(Icons.edit),
-                    //         onPressed: () {
-                    //           print('pick profile picture');
-                    //         },
-                    //         iconSize: 30,
-                    //       )),
-                    // ),
-                          
                     Container(
                       alignment: Alignment.topCenter,
-                      child: Image(image: AssetImage('${_profileDetails['profile_image']}'),),
+                      margin: EdgeInsets.only(top: 30),
+                      child: Column(
+                        children: <Widget>[
+                          CircleAvatar(
+                            backgroundImage: AssetImage(
+                                '${_profileDetails['profile_image']}'),
+                            radius: 70.0,
+                            child: Container(
+                                margin: EdgeInsets.only(left: 80, bottom: 5),
+                                padding: EdgeInsets.only(),
+                                alignment: Alignment.bottomCenter,
+                                child: IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    print('pick profile picture');
+                                  },
+                                  iconSize: 30,
+                                )),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                Icons.star,
+                                size: 15,
+                                color: Colors.grey,
+                              ),
+                              Icon(
+                                Icons.star,
+                                size: 18,
+                                color: Colors.grey,
+                              ),
+                              Icon(
+                                Icons.star,
+                                size: 20,
+                                color: Colors.grey,
+                              ),
+                              Icon(
+                                Icons.star,
+                                size: 22,
+                                color: Colors.grey,
+                              ),
+                              Icon(
+                                Icons.star,
+                                size: 24,
+                                color: Colors.grey,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(16.0, 200, 16.0, 5.0),
+                      // alignment: Alignment.center,
+                      margin: EdgeInsets.fromLTRB(16.0, 100, 16.0, 10.0),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      height: MediaQuery.of(context).size.height * 0.80,
+                      height: MediaQuery.of(context).size.height * 0.45,
                       child: ListView.separated(
                         padding: EdgeInsets.only(
                           top: 8.0,
                           bottom: 2.0,
-                          right: 2.0,
+                          right: 10.0,
                           left: 10.0,
                         ),
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Material(
-                            color: Colors.white,
+                            color: Colors.white10,
                             child: InkWell(
                               onTap: () => print("IMPLEMENT THIS"),
-                              // splashColor: Colors.,
                               child: Container(
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.65,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            '${snapshot.data.entries.elementAt(index).key.toUpperCase()}',
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            "${snapshot.data.entries.elementAt(index).value}",
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
+                                    Text(
+                                      '${snapshot.data.entries.elementAt(index).key.toUpperCase()}',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      "${snapshot.data.entries.elementAt(index).value}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w400,
                                       ),
                                     ),
-                                    // TODO: Implement iconbutton Below
-                                    Icon(
-                                      Icons.chevron_right,
-                                      size: 40.0,
-                                    )
                                   ],
                                 ),
                               ),
@@ -119,20 +134,6 @@ class Profile extends StatelessWidget {
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, 'login', ModalRoute.withName('login'));
-                        _auth.logout();
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("LOGOUT"),
-                          Icon(Icons.offline_bolt),
-                        ],
-                      ),
-                    )
                   ],
                 )
               : Center(
