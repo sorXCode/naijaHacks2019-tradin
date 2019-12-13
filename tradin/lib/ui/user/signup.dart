@@ -47,9 +47,9 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
-        errorText: signUpState.result == Result.failed && signUpState.emailError
-            ? signUpState.errormessage
-            : null,
+        // errorText: signUpState.result == Result.failed && signUpState.emailError
+        //     ? signUpState.errormessage
+        //     : null,
         errorStyle: TextStyle(color: Colors.white),
         hintText: "Email Address",
         hintStyle: fieldsHintStyle,
@@ -110,7 +110,6 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
       ),
     );
 
-
     Widget termsAndConditions = Row(
       children: <Widget>[
         Expanded(
@@ -136,9 +135,11 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
     );
 
     Widget signUpButton = InkWell(
-      onTap: () => signUpButtonEnabled && signUpState.status == Status.idle
-          ? signUpState.userSignUp(context)
-          : null,
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        signUpButtonEnabled && signUpState.status == Status.idle
+            ? signUpState.userSignUp(context) : null;
+      },
       splashColor: Colors.white,
       child: Container(
         alignment: Alignment.center,
@@ -159,7 +160,6 @@ class _SignUpState extends State<SignUp> with WidgetsConstants {
       ),
     );
 
-  
     Widget _vspace = SizedBox(height: 10);
 
     // Widget errorMessage = SizedBox(

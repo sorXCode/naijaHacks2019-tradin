@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tradin/http/authservice.dart';
+import 'package:tradin/models/phoneAuth.dart';
+import 'package:tradin/models/system.dart';
 import 'package:tradin/ui/user/widgetsConstants.dart';
 
 class PhoneAuth extends StatefulWidget {
-  PhoneAuth({Key key}) : super(key: key);
-
   @override
   _PhoneAuthState createState() => _PhoneAuthState();
 }
 
 class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Provider.of<AuthService>(context).requestPhoneVerification();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final phoneAuthState = Provider.of<PhoneAuthState>(context);
+
+    Widget buttonBuilder(int number) {
+      return InkWell(
+        onTap: () => phoneAuthState.updateCode(number.toString()),
+        child: CircleAvatar(
+          backgroundColor: Colors.greenAccent,
+          child: Text(
+            '$number',
+            style: TextStyle(
+                fontSize: 30, fontWeight: FontWeight.w800, color: Colors.white),
+          ),
+          radius: 40,
+        ),
+      );
+    }
+
     var codeBox = Stack(
       alignment: Alignment.centerRight,
       children: [
@@ -24,7 +49,8 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
             ),
           ),
           child: Text(
-            "1282",
+            // 'code',
+            phoneAuthState.code,
             style: TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.w800,
@@ -33,7 +59,13 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
             ),
           ),
         ),
-        IconButton(icon: Icon(Icons.backspace),)
+        IconButton(
+          icon: Icon(
+            Icons.backspace,
+            color: Color.fromRGBO(105, 250, 174, 1),
+          ),
+          onPressed: () => phoneAuthState.deleteLast(),
+        )
       ],
     );
 
@@ -49,7 +81,7 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
               crossAxisCount: 3,
               crossAxisSpacing: 40,
               mainAxisSpacing: 40,
-              children: List.generate(9, (number) => buttonBuilder(number + 1)),
+              children: List.generate(9, (index) => buttonBuilder(index + 1)),
             ),
           ),
           SizedBox(
@@ -66,12 +98,24 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
                 children: [
                   SizedBox(),
                   buttonBuilder(0),
-                  IconButton(
-                    icon: Icon(
-                      Icons.check,
-                      size: 40,
-                    ),
-                  ),
+                  phoneAuthState.status == Status.idle
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.check,
+                            size: 50,
+                            color: phoneAuthState.canSubmit
+                                ? Colors.blueAccent
+                                : Colors.black,
+                          ),
+                          onPressed: () => phoneAuthState.canSubmit
+                              ? phoneAuthState.handleSubmission(context)
+                              : null,
+                        )
+                      : Padding(
+                          padding: EdgeInsets.all(15),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 4,
+                          )),
                 ]),
           ),
         ],
@@ -91,23 +135,22 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            SizedBox(
+                height: 30,
+                child: phoneAuthState.errorMessage == null
+                    ? Text('')
+                    : Text(
+                        '${phoneAuthState.errorMessage}',
+                        style: TextStyle(
+                            color: Colors.redAccent,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      )),
             codeBox,
             numberPad,
           ],
         ),
       ),
-    );
-  }
-
-  Widget buttonBuilder(int number) {
-    return CircleAvatar(
-      backgroundColor: Colors.greenAccent,
-      child: Text(
-        '$number',
-        style: TextStyle(
-            fontSize: 30, fontWeight: FontWeight.w800, color: Colors.white),
-      ),
-      radius: 40,
     );
   }
 }

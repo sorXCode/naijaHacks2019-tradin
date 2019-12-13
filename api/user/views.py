@@ -77,6 +77,36 @@ class SignupAPI(Resource):
                 }
 
 
+class GetCode(Resource):
+    verification_Parser = reqparse.RequestParser()
+    verification_Parser.add_argument('phone_number', type=str, nullable=False)
+
+    # print(os.path.join(basedir))
+    with open(f"{basedir}/nexmo_cred.json") as credentials:
+        cred = json.load(credentials)
+        key = cred["key"]
+        secret = cred["secret"]
+    nexmo_client = nexmo.Client(key=key, secret=secret)
+
+    def post(self):
+        phone_number = self.verification_Parser.parse_args()['phone_number']
+        if not phone_number or len(phone_number) < 13:
+            return json.dumps({"status": "attach phone_number to verify 234xxxxxxxxxx"})
+        if phone_number[0] == 0:
+            phone_number = f"234{phone_number[1:]}"
+        response = self.nexmo_client.start_verification(
+            number=phone_number,
+            brand="TradIn",
+            workflow_id="5",
+            code_length="4")
+        print(phone_number)
+        result = {"status": "Started verification",
+                  "request_id": response["request_id"]} \
+            if response["status"] == "0" \
+            else {"status": "Error: %s" % response["error_text"]}
+        return result
+
+
 class VerifyPhone(Resource):
     verification_Parser = reqparse.RequestParser()
     verification_Parser.add_argument('phone_number', type=str, nullable=False)
@@ -90,27 +120,10 @@ class VerifyPhone(Resource):
         secret = cred["secret"]
     nexmo_client = nexmo.Client(key=key, secret=secret)
 
-    def get(self):
-        phone_number = self.verification_Parser.parse_args()['phone_number']
-        if not phone_number or len(phone_number) < 13:
-            return json.dumps({"status": "attach phone_number to verify 234xxxxxxxxxx"})
-        if phone_number[0] == 0:
-            phone_number = f"234{phone_number[1:]}"
-        response = self.nexmo_client.start_verification(
-            number=phone_number,
-            brand="TradIn",
-            workflow_id="5",
-            code_length="4")
-
-        result = {"status": "Started verification",
-                  "request_id": response["request_id"]} \
-            if response["status"] == "0" \
-            else {"status": "Error: %s" % response["error_text"]}
-        return result
-
     def post(self):
         args = self.verification_Parser.parse_args()
         request_id, code = args['request_id'], args['code']
+        print(request, '\n\n', code)
         response = self.nexmo_client.check_verification(request_id, code=code)
         result = {"status": "Verificaton Successful"}\
             if response["status"] == "0" \
@@ -188,5 +201,6 @@ def verify_token(token):
 api.add_resource(SignupAPI, '/create_user/')
 api.add_resource(LoginAPI, '/login/')
 api.add_resource(VerifyPhone, '/verify_phone/')
+api.add_resource(GetCode, '/get_code/')
 api.add_resource(Profile, '/profile/')
 api.add_resource(Home, '/')

@@ -127,7 +127,7 @@ class SignUpState extends ChangeNotifier {
     switch (response.runtimeType) {
       case User:
         _result = Result.success;
-        Navigator.pushNamed(_context, 'home');
+        Navigator.pushNamed(_context, 'phoneAuth');
         break;
       case String:
         _errormessage = response;

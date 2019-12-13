@@ -37,12 +37,13 @@ class _HomeState extends State<Home> {
       items: _buttomNavBarItems,
       currentIndex: _currentTabIndex,
       type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.grey[200],
       onTap: (int index) {
         setState(() {
           _currentTabIndex = index;
         });
       },
-      selectedItemColor: Colors.lightBlue,
+      selectedItemColor: Colors.blue,
       unselectedItemColor: Colors.grey,
       showUnselectedLabels: true,
       showSelectedLabels: true,
@@ -51,6 +52,16 @@ class _HomeState extends State<Home> {
     );
 
     return Scaffold(
+      floatingActionButton: _currentTabIndex == 3
+          ? IconButton(
+              icon: Icon(
+                Icons.power_settings_new,
+                color: Colors.black54,
+                size: 40,
+              ),
+              onPressed: () {},
+            )
+            : null,
       body: _tabPages[_currentTabIndex],
       bottomNavigationBar: bottomNavBar,
     );
@@ -59,7 +70,7 @@ class _HomeState extends State<Home> {
 
 var _bottomNavigationBarItems = [
   {
-    'title': 'Home',
+    'title': 'Feeds',
     'icon': 'images/icons/home.png',
     'activity': HomePage(),
   },

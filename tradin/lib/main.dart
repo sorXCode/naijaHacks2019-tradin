@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tradin/http/authservice.dart';
 import 'package:tradin/models/login.dart';
+import 'package:tradin/models/phoneAuth.dart';
 import 'package:tradin/models/signup.dart';
 import 'package:tradin/router.dart';
 import 'package:tradin/ui/home/home.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget with WidgetsConstants {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => PhoneAuthState()),
         ChangeNotifierProvider(create: (_) => LoginState()),
         ChangeNotifierProvider(create: (_) => SignUpState()),
         ChangeNotifierProvider(create: (_) => AuthService()),
