@@ -127,7 +127,7 @@ class SignUpState extends ChangeNotifier {
     switch (response.runtimeType) {
       case User:
         _result = Result.success;
-        Navigator.pushNamed(_context, 'phoneAuth');
+        Navigator.pushNamedAndRemoveUntil(_context, 'phoneAuth', ModalRoute.withName('login'));
         break;
       case String:
         _errormessage = response;

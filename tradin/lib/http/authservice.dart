@@ -8,6 +8,7 @@ import 'package:tradin/models/user.dart';
 
 class AuthService extends ChangeNotifier {
   String request_id;
+  bool _request_sent = false;
   static final host = '10.0.2.2';
   static final port = '5000';
   SharedPreferences _prefs;
@@ -77,6 +78,7 @@ class AuthService extends ChangeNotifier {
 
   handleResponse(response, Map<String, dynamic> details) {
     // _user keep resting to null on signup success
+    print(response);
     var footprint =
         details.containsKey('email') ? details['email'] : details['identity'];
     // print(response.body);
@@ -94,38 +96,54 @@ class AuthService extends ChangeNotifier {
 
   requestPhoneVerification() async {
     _getUserFromSharedPreferences();
-    print('phone number is: ${user.phoneNumber}');
-    // try {
-    //   final response = await http.post(
-    //     '$address/get_code/',
-    //     body: {
-    //       'phone_number': user.phoneNumber,
-    //     },
-    //   );
-    //   print(response.toString());
-    //   request_id = json.decode(response.body)['request_id'];
-    // } catch (e) {
-    //   print('error found');
-    //   print('$e');
-    // }
+    print(_request_sent);
+    if (_request_sent == false ) {
+      print('phone number is: ${user.phoneNumber}');
+      _request_sent = true;
+      try {
+        final response = await http.post(
+          '$address/get_code/',
+          body: {
+            "phone_number": "${user.phoneNumber}",
+          },
+        );
+        request_id = json.decode(response.body)['request_id'];
+        print(request_id);
+        _prefs.setString('request_id', request_id);
+      } catch (e) {
+        print('error found');
+        print('$e');
+      }
+    }
   }
 
   verifyPhoneNumber(code) async {
-    // try {
-    //   final response = await http.post(
-    //     '$address/verify_phone/',
-    //     body: {
-    //       'request_id': request_id,
-    //       'code': code,
-    //     },
-    //   );
-    //   print(response.body);
-    // } catch (e) {
-    //   print('error found');
-    //   print('$e');
-    //   return e.toString();
-    // }
-    return "successful";
+    _getUserFromSharedPreferences();
+    request_id = _prefs.get('request_id');
+    print(request_id);
+    print(code);
+    try {
+      var response = await http.post(
+        '$address/verify_phone/',
+        body: {
+          'request_id': request_id,
+          'code': code,
+        },
+        headers: {
+          "Authorization": "Bearer ${_user.token}"
+        }
+      );
+
+      final _response = json.decode(response.body);
+      _user = User.fromJson(_response['user']);
+      _prefs.setString('user', json.encode(_user));
+      print(response);
+      return _response['status'];
+    } catch (e) {
+      print('error found');
+      print('$e');
+      return e.toString();
+    }
   }
 
   logout() async {

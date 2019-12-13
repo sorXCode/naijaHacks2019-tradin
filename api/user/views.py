@@ -61,19 +61,11 @@ class SignupAPI(Resource):
         if not user:
             abort(409, "account found on platform, create_user unsuccessful.")
         g.user = user
-        auth_token = user.generate_auth_token()
+        # auth_token = user.generate_auth_token()
         uid = secrets.token_hex(10)
         return {'status': 'success',
                 'message': 'Account Created, proceed to home',
-                'user': {'uid': uid,
-                         'displayName': user.full_name,
-                         'photoUrl': 'user.photo_url',
-                         'email': user.email,
-                         'phoneNumber': user.phone_number,
-                         'isEmailVerified': user.is_email_verified,
-                         'isPhoneVerified': user.is_phone_number_verified,
-                         },
-                'token': auth_token,
+                'user': user.profile(),
                 }
 
 
@@ -90,10 +82,12 @@ class GetCode(Resource):
 
     def post(self):
         phone_number = self.verification_Parser.parse_args()['phone_number']
-        if not phone_number or len(phone_number) < 13:
-            return json.dumps({"status": "attach phone_number to verify 234xxxxxxxxxx"})
-        if phone_number[0] == 0:
+
+        if not phone_number:
+            return {"status": "attach phone_number to verify 234xxxxxxxxxx"}
+        if phone_number[0] == "0":
             phone_number = f"234{phone_number[1:]}"
+            print(phone_number, type(phone_number))
         response = self.nexmo_client.start_verification(
             number=phone_number,
             brand="TradIn",
@@ -120,14 +114,19 @@ class VerifyPhone(Resource):
         secret = cred["secret"]
     nexmo_client = nexmo.Client(key=key, secret=secret)
 
+    @auth_.login_required
     def post(self):
         args = self.verification_Parser.parse_args()
         request_id, code = args['request_id'], args['code']
-        print(request, '\n\n', code)
         response = self.nexmo_client.check_verification(request_id, code=code)
-        result = {"status": "Verificaton Successful"}\
-            if response["status"] == "0" \
-            else {"status": "Error: %s" % response["error_text"]}
+        if response["status"] == "0":
+            g.user.phone_verified()
+            result = {"status": "Verificaton Successful",
+                      "user": g.user.profile(), }
+        else:
+            result = {"status": "Error: %s" % response["error_text"]}
+        print(g.user)
+        print(result)
         return result
 
 
@@ -145,21 +144,13 @@ class LoginAPI(Resource):
         response_object = {'status': 'Failed',
                            'message': 'Incorrect phone_number or password'}
         identity, password = args['identity'], args['password']
-
         user, auth_token = self.model.login(identity, password)
-        uid = secrets.token_hex(10)
+        # uid = secrets.token_hex(10)
         if user:
             response_object = {'status': 'Success',
                                'message': 'Login successful',
-                               'user': {'uid': uid,
-                                        'displayName': user.full_name,
-                                        'photoUrl': 'user.photo_url',
-                                        'email': user.email,
-                                        'phoneNumber': user.phone_number,
-                                        'isEmailVerified': user.is_email_verified,
-                                        'isPhoneVerified': user.is_phone_number_verified,
-                                        },
-                               'token': auth_token}
+                               'user': user.profile(),
+                               }
         g.user = user
         return jsonify(response_object)
 
@@ -167,7 +158,8 @@ class LoginAPI(Resource):
 class Home(Resource):
     @auth_.login_required
     def get(self):
-        return {"msg": "@Home_page"}
+        return {"msg": "@Home_page",
+                "user": g.user.profile()}
 
 
 class Profile(Resource):

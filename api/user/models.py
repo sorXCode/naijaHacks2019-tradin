@@ -67,7 +67,7 @@ class User(UserMixin, db.Model):
                        phone_number=phone_number)
             user.password = password
             db.session.add(user)
-            # db.session.commit()
+            db.session.commit()
             return user
         return None
 
@@ -98,16 +98,21 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return "<User {}>".format(self.full_name)
-    
 
     def profile(self):
-        return {'displayName': self.full_name,
-                         'photoUrl': 'user.photo_url',
-                         'email': self.email,
-                         'phoneNumber': self.phone_number,
-                         'isEmailVerified': self.is_email_verified,
-                         'isPhoneVerified': self.is_phone_number_verified,
-                         }
+        return {'uid': 'none',
+                'displayName': self.full_name,
+                'photoUrl': 'user.photo_url',
+                'email': self.email,
+                'phoneNumber': self.phone_number,
+                'token': self.generate_auth_token(),
+                'isEmailVerified': self.is_email_verified,
+                'isPhoneVerified': self.is_phone_number_verified,
+                }
+
+    def phone_verified(self):
+        self.phone_number_verified = True
+        db.session.commit()
 
 
 @login_manager.user_loader
