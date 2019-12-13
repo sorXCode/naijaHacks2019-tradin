@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tradin/ui/home/home.dart';
+import 'package:tradin/ui/home/requests.dart';
 import 'package:tradin/ui/home/searchResult.dart';
 import 'package:tradin/ui/user/login.dart';
 import 'package:tradin/ui/user/phoneAuth.dart';
@@ -20,6 +21,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => PhoneAuth());
       case 'searchResults':
         return MaterialPageRoute(builder: (_) => SearchResults());
+      case 'postRequest':
+        return MaterialPageRoute(builder: (_) => PostRequest());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(

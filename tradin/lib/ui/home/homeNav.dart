@@ -30,7 +30,9 @@ class HomePage extends StatelessWidget {
     }
 
     final postRequestButton = MaterialButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(context, 'postRequest');
+      },
       color: Colors.greenAccent,
       child: Text("POST REQUEST",
           softWrap: true,
