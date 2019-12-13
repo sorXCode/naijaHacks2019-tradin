@@ -9,12 +9,13 @@ import 'package:tradin/models/user.dart';
 class AuthService extends ChangeNotifier {
   String request_id;
   bool _request_sent = false;
-  static final host = '10.0.2.2';
-  static final port = '5000';
+  // static final host = '10.0.2.2';
+  // static final port = '5000';
   SharedPreferences _prefs;
   User _user;
   Profile _profile;
-  String get address => 'http://$host:$port';
+  // String get address => 'http://$host:$port';
+  String address = 'http://tradin.xyz';
   User get user => _user;
 
   AuthService() {

@@ -33,6 +33,7 @@ class Profile extends StatelessWidget {
                       child: Column(
                         children: <Widget>[
                           CircleAvatar(
+                            backgroundColor: Colors.white,
                             backgroundImage: AssetImage(
                                 '${_profileDetails['profile_image']}'),
                             radius: 70.0,
@@ -112,9 +113,11 @@ class Profile extends StatelessWidget {
                                       style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
                                     ),
                                     Text(
-                                      "${snapshot.data.entries.elementAt(index).value}",
+                                      "${snapshot.data.entries.elementAt(index).value.runtimeType == String ? snapshot.data.entries.elementAt(index).value : snapshot.data.entries.elementAt(index).value == true ? "Yes" : "No"}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(
