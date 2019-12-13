@@ -14,7 +14,7 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    Provider.of<AuthService>(context).requestPhoneVerification();
+    Provider.of<AuthService>(context, listen: false).requestPhoneVerification();
   }
 
   @override
@@ -25,11 +25,11 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
       return InkWell(
         onTap: () => phoneAuthState.updateCode(number.toString()),
         child: CircleAvatar(
-          backgroundColor: Colors.greenAccent,
+          backgroundColor: Colors.white,
           child: Text(
             '$number',
             style: TextStyle(
-                fontSize: 30, fontWeight: FontWeight.w800, color: Colors.white),
+                fontSize: 30, fontWeight: FontWeight.w800, color: Colors.greenAccent[900]),
           ),
           radius: 40,
         ),
@@ -45,8 +45,10 @@ class _PhoneAuthState extends State<PhoneAuth> with WidgetsConstants {
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.white38,
-              width: 8,
+              width: 10,
             ),
+            borderRadius: BorderRadius.circular(10.0),
+            
           ),
           child: Text(
             // 'code',

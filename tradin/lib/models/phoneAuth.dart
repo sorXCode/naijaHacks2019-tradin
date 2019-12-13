@@ -49,9 +49,7 @@ class PhoneAuthState extends ChangeNotifier {
     _initswitches();
     _context = context;
     notifyListeners();
-    await Future.delayed(Duration(milliseconds: 1500));
     final response = await _authService.verifyPhoneNumber(_code);
-    print(response.toString());
     handleResponse(response);
     _status = Status.idle;
     notifyListeners();
@@ -59,12 +57,13 @@ class PhoneAuthState extends ChangeNotifier {
 
   handleResponse(response) {
     // body = response.body
-    if (response.contains('success')) {
+    if (response.contains('Successful')) {
       Navigator.pushNamedAndRemoveUntil(
           _context, 'home', ModalRoute.withName('home'));
     } else {
-      errorMessage = 'Incorrect Code';
-      // notifyListeners();
+      errorMessage = 'Invalid or Expired Code';
+      print(errorMessage);
+      notifyListeners();
     }
   }
 }
